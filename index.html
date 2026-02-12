@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByMishanya · проекты</title>
+    <style>
+        /* ---------- Глобальные переменные / тёмная тема ---------- */
+        :root {
+            --bg: #0a0c0f;
+            --surface: #14181c;
+            --surface2: #1e2329;
+            --accent: #00ff9d;
+            --accent-dim: #00cc7a;
+            --text: #eef4fa;
+            --text-dim: #a0b3c9;
+            --border: #2a333c;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* ---------- Хедер / бренд ---------- */
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .brand h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, var(--accent) 0%, #a0f0d0 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 12px rgba(0, 255, 157, 0.3));
+        }
+
+        .brand .domains {
+            font-family: var(--font-mono);
+            color: var(--text-dim);
+            background: var(--surface);
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .brand .domains span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ---------- Панель вкладок ---------- */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-dim);
+            color: var(--accent);
+            background: rgba(0, 255, 157, 0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0a0c0f;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.5);
+        }
+
+        /* ---------- Карточка проекта (контент вкладки) ---------- */
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 2rem 2rem 2rem 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            transition: all 0.25s;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .project-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0.6; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 0.8rem;
+        }
+
+        .project-name {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .project-tag {
+            font-family: var(--font-mono);
+            background: var(--surface2);
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            border: 1px solid var(--accent-dim);
+        }
+
+        .project-description {
+            font-size: 1.2rem;
+            margin-bottom: 1.8rem;
+            color: var(--text);
+            font-weight: 350;
+            line-height: 1.5;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        .feature-list li {
+            background: rgba(255,255,255,0.03);
+            padding: 0.7rem 1rem 0.7rem 2.2rem;
+            border-radius: 18px;
+            border-left: 4px solid var(--accent);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0.8rem;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .status-line {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.8rem 0 1.5rem;
+            padding: 1rem 1.4rem;
+            background: var(--surface2);
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .status-label {
+            color: var(--text-dim);
+        }
+
+        .status-value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0a0c0f;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0,255,157,0.05);
+        }
+
+        /* ---------- Футер ---------- */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dashed transparent;
+            transition: border-color 0.2s;
+        }
+
+        .footer a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .easter-egg {
+            color: #5a6f7e;
+            font-style: italic;
+        }
+
+        /* ---------- Адаптивность ---------- */
+        @media (max-width: 600px) {
+            .brand h1 { font-size: 2.2rem; }
+            .tab-btn { font-size: 0.9rem; padding: 0.5rem 1rem; }
+            .project-name { font-size: 1.6rem; }
+            .project-description { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Шапка — ByMishanya -->
+        <div class="brand">
+            <h1>ByMishanya</h1>
+            <div class="domains">
+                <span>bymishanya.ru</span> · <span>bymishanya.online</span>
+            </div>
+        </div>
+
+        <!-- Навигация по вкладкам (4 проекта) -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tab1">ПодКрышей</button>
+            <button class="tab-btn" data-tab="tab2">BearGD.VPN</button>
+            <button class="tab-btn" data-tab="tab3">hub.ai</button>
+            <button class="tab-btn" data-tab="tab4">NXT</button>
+        </div>
+
+        <!-- Контент вкладок (проекты) -->
+        <div id="tab1" class="project-card active">
+            <div class="project-header">
+                <span class="project-name">ПодКрышей</span>
+                <span class="project-tag">E2EE · P2P · RuStore</span>
+            </div>
+            <div class="project-description">
+                Безопасный мессенджер с шифрованием на концах, секретными чатами и звонками peer‑to‑peer. Хранение медиа в BlackBlaze, обычные чаты — Firebase.
+            </div>
+            <ul class="feature-list">
+                <li>E2EE + PQ-крипто</li>
+                <li>P2P‑звонки</li>
+                <li>Группы и секретные чаты</li>
+                <li>Бэкенд: Kotlin, Firebase, BlackBlaze</li>
+            </ul>
+            <div class="status-line">
+                <span class="status-item"><span class="status-label">статус:</span> <span class="status-value">бета, скоро в RuStore</span></span>
+                <span class="status-item"><span class="status-label">сборка:</span> <span class="status-value">Kotlin Multiplatform</span></span>
+            </div>
+            <div class="links">
+                <a href="#" class="btn btn-primary">📲 RuStore (скоро)</a>
+                <a href="#" class="btn btn-outline">💻 GitHub (приватный)</a>
+            </div>
+        </div>
+
+        <div id="tab2" class="project-card">
+            <div class="project-header">
+                <span class="project-name">BearGD.VPN</span>
+                <span class="project-tag">Cloudflare · VLESS · Telegram‑бот</span>
+            </div>
+            <div class="project-description">
+                Умный VPN через Cloudflare Workers. Бот выдаёт ключ VLESS, трафик идёт через зарубежные edge‑сервера. Прокси-слой для обхода детекта CDN.
+            </div>
+            <ul class="feature-list">
+                <li>VLESS + Cloudflare Workers</li>
+                <li>Telegram‑бот для выдачи ключей</li>
+                <li>Прокси-обфускация</li>
+                <li>Ни один ютуб не догадается</li>
+            </ul>
+            <div class="status-line">
+                <span class="status-item"><span class="status-label">статус:</span> <span class="status-value">рабочий прототип</span></span>
+                <span class="status-item"><span class="status-label">клиент:</span> <span class="status-value">Kotlin / Android</span></span>
+            </div>
+            <div class="links">
+                <a href="#" class="btn btn-primary">🐻 Скачать .apk</a>
+                <a href="#" class="btn btn-outline">📦 Бот (заглушка)</a>
+            </div>
+        </div>
+
+        <div id="tab3" class="project-card">
+            <div class="project-header">
+                <span class="project-name">hub.ai</span>
+                <span class="project-tag">OpenRouter · Flutter · Python</span>
+            </div>
+            <div class="project-description">
+                Бесплатный агрегатор ИИ-моделей через OpenRouter API. Несколько моделей в одном интерфейсе, TTS, планируется умная колонка на ESP32.
+            </div>
+            <ul class="feature-list">
+                <li>OpenRouter (бесплатные модели)</li>
+                <li>Flutter / Python бэкенд</li>
+                <li>TTS (text‑to‑speech)</li>
+                <li>В планах: колонка на ESP32</li>
+            </ul>
+            <div class="status-line">
+                <span class="status-item"><span class="status-label">статус:</span> <span class="status-value">MVP</span></span>
+                <span class="status-item"><span class="status-label">платформа:</span> <span class="status-value">Android + Web</span></span>
+            </div>
+            <div class="links">
+                <a href="#" class="btn btn-primary">🤖 Демо</a>
+                <a href="#" class="btn btn-outline">📄 API‑доки</a>
+            </div>
+        </div>
+
+        <div id="tab4" class="project-card">
+            <div class="project-header">
+                <span class="project-name">NXT</span>
+                <span class="project-tag">P2P · Remote · E2EE</span>
+            </div>
+            <div class="project-description">
+                Аналог TeamViewer, полностью свой. P2P-конференции, удалённое управление, групповые чаты, шифрование SHA256 + E2EE. История хранится локально в зашифрованном файле.
+            </div>
+            <ul class="feature-list">
+                <li>P2P (WebRTC / собственный протокол)</li>
+                <li>E2EE + SHA256</li>
+                <li>Логи шифруются на компе</li>
+                <li>Звонки и конференции</li>
+            </ul>
+            <div class="status-line">
+                <span class="status-item"><span class="status-label">статус:</span> <span class="status-value">ядро готово, UI в работе</span></span>
+                <span class="status-item"><span class="status-label">стек:</span> <span class="status-value">Kotlin, Desktop Compose</span></span>
+            </div>
+            <div class="links">
+                <a href="#" class="btn btn-primary">💾 Скачать (pre‑alpha)</a>
+                <a href="#" class="btn btn-outline">🔐 Исходный код (soon)</a>
+            </div>
+        </div>
+
+        <!-- Подвал — и пасхалочка для Елены Ивановны -->
+        <div class="footer">
+            <span>© 2026 ByMishanya — собрано в нано, на коленке 🛠️</span>
+            <span class="easter-egg">
+                <a href="#" onclick="alert('Динара Вафовна, поставьте оценку уже😌'); return false;">🎓 историчка, ау</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- Простой JS для переключения вкладок -->
+    <script>
+        (function() {
+            const buttons = document.querySelectorAll('.tab-btn');
+            const cards = document.querySelectorAll('.project-card');
+
+            function activateTab(tabId) {
+                // скрыть все карточки
+                cards.forEach(card => card.classList.remove('active'));
+                // показать нужную
+                document.getElementById(tabId).classList.add('active');
+
+                // снять активный класс со всех кнопок
+                buttons.forEach(btn => btn.classList.remove('active'));
+                // найти кнопку с таким data-tab и активировать
+                buttons.forEach(btn => {
+                    if (btn.dataset.tab === tabId) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            // навесить обработчики на кнопки
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const tabId = this.dataset.tab;
+                    activateTab(tabId);
+                });
+            });
+
+            // начальное состояние: вкладка ПодКрышей (уже активна)
+            // но на всякий случай синхронизируем
+            const activeBtn = document.querySelector('.tab-btn.active');
+            if (activeBtn) {
+                const tabId = activeBtn.dataset.tab;
+                // активируем соответствующую карточку, если вдруг не совпадает
+                cards.forEach(card => card.classList.remove('active'));
+                document.getElementById(tabId)?.classList.add('active');
+            }
+        })();
+    </script>
+
+    <!-- 
+        Этот сайт полностью готов к размещению на GitHub Pages.
+        Привяжешь свои домены — и всё заведётся.
+        И да пребудет с тобой сила открытого кода 🚀
+    -->
+</body>
+</html>
